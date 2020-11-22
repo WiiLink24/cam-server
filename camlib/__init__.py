@@ -1,0 +1,3 @@
+import servlets
+STATUS_OK = 100
+STATUS_MAINTAINCE = 1040
