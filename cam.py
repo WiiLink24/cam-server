@@ -144,7 +144,7 @@ def fileopservlet():
         except:
             print('No JSON')
         print('Headers:',request.headers)
-    jpeg = request.form['jpegData']
+    jpeg = bytes(request.form['jpegData'])
     f = open('temp.jpg','wb')
     f.write(jpeg)
     f.close()
