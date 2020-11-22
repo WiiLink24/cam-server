@@ -137,6 +137,14 @@ delivery_7=0
         return NotImplemented('Please enable hardcoded responses', status_code=501)
 @app.route('/wii_svr/WPFileOperationServlet',methods=['GET','POST'])
 def fileopservlet():
+    if debug:
+        print('Arguments:',request.args)
+        try:
+            print('JSON:',request.json())
+        except:
+            print('No JSON')
+        print('Headers:',request.headers)
+        
     if hardcode_responses:
         return '''
 statusCode=1000
