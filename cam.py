@@ -144,7 +144,10 @@ def fileopservlet():
         except:
             print('No JSON')
         print('Headers:',request.headers)
-        
+    jpeg = request.form['jpegData']
+    f = open('temp.jpg','wb')
+    f.write(jpeg)
+    f.close()
     if hardcode_responses:
         return '''
 statusCode=1000
@@ -153,10 +156,7 @@ errorItems_1=0
 message=a
 imageID=1
         '''
-        jpeg = request.form['jpegData']
-        f = open('temp.jpg','wb')
-        f.write(jpeg)
-        f.close()
+
     return NotImplemented('Please enable hardcoded responses', status_code=501)
         
             
