@@ -22,6 +22,14 @@ if hardcode_responses:
      print('[WARN] Hardcoded responses are enabled, do not use in production!')
 @app.route('/wii_svr/WPOperationServlet', methods=['GET','POST'])
 def op_servlet():
+    if debug:
+        print('Arguments:',request.args)
+        try:
+            print('JSON:',request.json())
+        except:
+            print('No JSON')
+        print('Headers:',request.headers)
+        
     if hardcode_responses:
         return '''
 statusCode=1000
