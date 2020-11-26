@@ -61,7 +61,7 @@ def render(file_name, out):
                 )
 
                 mask_im = Image.new(mode="RGB", size=(frame_width, frame_height))
-                mask_im.paste(picture_resized, (int(float(rect_used[0]) / 2) * -1, int(float(rect_used[1]) / 2) * -1))
+                mask_im.paste(picture_resized, (int(int(rect_used[0]) * (zoom * -1)), int(int(rect_used[1]) * (zoom * -1))))
 
                 img.paste(
                     mask_im,
