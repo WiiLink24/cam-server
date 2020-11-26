@@ -1,7 +1,12 @@
 from flask import Flask, request
+
 app = Flask(__name__)
-debug = True # Enable debug printing
-hardcode_responses = True # Enable hardcoded responses
+debug = True  # Enable debug printing
+from render import render
+
+hardcode_responses = True  # Enable hardcoded responses
+
+
 class NotImplemented(Exception):
     status_code = 501
 
@@ -14,24 +19,28 @@ class NotImplemented(Exception):
 
     def to_dict(self):
         rv = dict(self.payload or ())
-        rv['message'] = self.message
+        rv["message"] = self.message
         return rv
+
+
 if debug:
-     print('[WARN] Code output may be very messy!')
+    print("[WARN] Code output may be very messy!")
 if hardcode_responses:
-     print('[WARN] Hardcoded responses are enabled, do not use in production!')
-@app.route('/wii_svr/WPOperationServlet', methods=['GET','POST'])
+    print("[WARN] Hardcoded responses are enabled, do not use in production!")
+
+
+@app.route("/wii_svr/WPOperationServlet", methods=["GET", "POST"])
 def op_servlet():
     if debug:
-        print('Arguments:',request.args)
+        print("Arguments:", request.args)
         try:
-            print('JSON:',request.json())
+            print("JSON:", request.json())
         except:
-            print('No JSON')
-        print('Headers:',request.headers)
-        
+            print("No JSON")
+        print("Headers:", request.headers)
+
     if hardcode_responses:
-        return '''
+        return """
 statusCode=1000
 latestClientVersion=0x02
 errorItems_1=0
@@ -133,31 +142,27 @@ delivery_4=1
 delivery_5=1
 delivery_6=1
 delivery_7=0
-            '''
-        return NotImplemented('Please enable hardcoded responses', status_code=501)
-@app.route('/wii_svr/WPFileOperationServlet',methods=['GET','POST'])
+            """
+        return NotImplemented("Please enable hardcoded responses", status_code=501)
+
+
+@app.route("/wii_svr/WPFileOperationServlet", methods=["GET", "POST"])
 def fileopservlet():
     if debug:
-        print('Arguments:',request.args)
+        print("Arguments:", request.args)
         try:
-            print('JSON:',request.json())
+            print("JSON:", request.json())
         except:
-            print('No JSON')
-        print('Headers:',request.headers)
-    jpeg = bytes(request.form['jpegData'])
-    f = open('temp.jpg','wb')
-    f.write(jpeg)
-    f.close()
+            print("No JSON")
+        print("Headers:", request.headers)
+    render("temp.png")
     if hardcode_responses:
-        return '''
+        return """
 statusCode=1000
 latestClientVersion=0x02
 errorItems_1=0
 message=a
 imageID=1
-        '''
+        """
 
-    return NotImplemented('Please enable hardcoded responses', status_code=501)
-        
-            
-    
+    return NotImplemented("Please enable hardcoded responses", status_code=501)
