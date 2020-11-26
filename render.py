@@ -36,10 +36,7 @@ def render(file_name, out):
             page_object = f"{page_object:02}"
 
             layer_name = (
-                page_info[f"Layer{page_object}"]
-                
-                .replace("Object", "")
-                .split(",")[0]
+                page_info[f"Layer{page_object}"].replace("Object", "").split(",")[0]
             )
 
             object_section = config[f"Page{page_num}Object{layer_name}"]
@@ -49,8 +46,8 @@ def render(file_name, out):
             if object_type == 1:
                 zoom = float(object_section["Zoom"]) / 100
                 rect_used = object_section["RectUsed"].split(",")
-                center_point_x, center_point_y = (
-                    object_section["CenterPoint"].split(",")
+                center_point_x, center_point_y = object_section["CenterPoint"].split(
+                    ","
                 )
 
                 frame_width = int(object_section["EffectFrameWidth"])
@@ -76,19 +73,13 @@ def render(file_name, out):
 
             # Object is text.
             elif object_type == 2:
-                font_r, font_g, font_b = (
-                    object_section["FontColor"].split(",")
-                )
-                start_position_x, start_position_y = (
-                    object_section["StartPosition"].split(",")
-                )
+                font_r, font_g, font_b = object_section["FontColor"].split(",")
+                start_position_x, start_position_y = object_section[
+                    "StartPosition"
+                ].split(",")
 
-                character_width = int(
-                    float(object_section["Ch_Width_Size"])
-                )
-                character_height = int(
-                    float(object_section["Ch_Height_Size"])
-                )
+                character_width = int(float(object_section["Ch_Width_Size"]))
+                character_height = int(float(object_section["Ch_Height_Size"]))
                 text = " ".join(object_section["Text"].split())
 
                 # When possible, we want to localize.
@@ -116,9 +107,7 @@ def render(file_name, out):
 
             # Object is a background.
             elif object_type == 4:
-                bg_frame_id = (
-                    object_section["BGFrameID"].replace(".bmp", ".jpg")
-                )
+                bg_frame_id = object_section["BGFrameID"].replace(".bmp", ".jpg")
 
                 background = Image.open(bg_frame_id, "r")
                 img.paste(background, (0, 0), background)
@@ -126,3 +115,5 @@ def render(file_name, out):
             img.save(out.format(page_num))
 
 
+# TODO: REMOVE
+render("1.jpg", "temp.png")
