@@ -1,5 +1,6 @@
 import configparser
 import io
+import re
 from PIL import Image, ImageDraw, ImageFont
 
 s_config = open("digicamvalues.ini", "r").read().encode().decode("utf-8-sig")
@@ -34,10 +35,22 @@ for i in range(1, page_count + 1):
             center_point_x = int(center_point[0])
             center_point_y = int(center_point[1])
 
+            zoom = float(object_section["Zoom"]) / 100
+
+            rect_used = object_section["RectUsed"].replace('"', "").split(",")
+
+            frame_width = int(object_section["EffectFrameWidth"])
+            frame_height = int(object_section["EffectFrameHeight"])
+
             picture = Image.open(file_name, "r")
             picture_width, picture_height = picture.size
 
-            img.paste(picture, ((center_point_x - int(picture_width / 2), center_point_y - int(picture_height / 2))))
+            picture_resized = picture.resize((frame_width, int(picture_height / (picture_width / frame_width))))
+
+            mask_im = Image.new(mode="RGB", size=(frame_width, frame_height))
+            mask_im.paste(picture_resized, (0, 0))
+
+            img.paste(mask_im, (center_point_x - int(frame_width / 2), center_point_y - int(frame_height / 2)))
 
         elif object_type == 2:
             font_color = object_section["FontColor"].replace('"', "").split(",")
@@ -46,7 +59,19 @@ for i in range(1, page_count + 1):
             start_position_y = int(start_position[1])
             character_width = int(float(object_section["Ch_Width_Size"].replace('"', "")))
             character_height = int(float(object_section["Ch_Height_Size"].replace('"', "")))    
-            text = " ".join(object_section["Text"].replace('"', "").split())
+            text = object_section["Text"].replace('"', "")
+
+            if text == "W" + (" " * 35) + "i" + (" " * 17) + "i" + (" " * 46) + "番" + (" " * 50) + "号":
+                text = "Wii Number:"
+
+            try:
+                number = int(text.replace(" ", ""))
+                if len(str(number)) == 16:
+                    text = " ".join(re.findall('....', text.replace(" ", "")))
+                if start_position_x == 358:
+                    start_position_x = 585
+            except ValueError:
+                pass
 
             draw = ImageDraw.Draw(img)
             font = ImageFont.truetype("FOT-RodinNTLGPro-DB.otf", character_height)
@@ -54,9 +79,9 @@ for i in range(1, page_count + 1):
             draw.text((start_position_x, start_position_y), text, (int(font_color[0]), int(font_color[1]), int(font_color[2])), font)
         
         elif object_type == 4:
-            bg_frame_id = object_section["BGFrameID"].replace('"', "").replace(".bmp", ".jpg")
+            bg_frame_id = object_section["BGFrameID"].replace('"', "").replace(".bmp", ".png")
             
             background = Image.open(bg_frame_id, "r")
             img.paste(background, (0, 0), background)
 
-        img.save("Page{}.png".format(i))
+    img.save("Page{}.png".format(i))
