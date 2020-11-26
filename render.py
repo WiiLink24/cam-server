@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 def render(file_name, out):
-    s_config = open("digicamvalues.ini", "r").read().encode().decode("utf-8-sig")
+    s_config = open("digicamvalues2.ini", "r").read().encode().decode("utf-8-sig")
 
     buf = io.StringIO(s_config)
     config = configparser.ConfigParser()
@@ -44,7 +44,7 @@ def render(file_name, out):
 
             # Object is a JPEG.
             if object_type == 1:
-                zoom = float(object_section["Zoom"]) / 100
+                zoom = float(object_section["Zoom"]) * 0.01
                 rect_used = object_section["RectUsed"].split(",")
                 center_point_x, center_point_y = object_section["CenterPoint"].split(
                     ","
@@ -57,11 +57,11 @@ def render(file_name, out):
                 picture_width, picture_height = picture.size
 
                 picture_resized = picture.resize(
-                    (frame_width, int(picture_height / (picture_width / frame_width)))
+                    (int(picture_width * zoom), int(picture_height * zoom))
                 )
 
                 mask_im = Image.new(mode="RGB", size=(frame_width, frame_height))
-                mask_im.paste(picture_resized, (0, 0))
+                mask_im.paste(picture_resized, (int(float(rect_used[0]) / 2) * -1, int(float(rect_used[1]) / 2) * -1))
 
                 img.paste(
                     mask_im,
@@ -107,13 +107,13 @@ def render(file_name, out):
 
             # Object is a background.
             elif object_type == 4:
-                bg_frame_id = object_section["BGFrameID"].replace(".bmp", ".jpg")
+                bg_frame_id = object_section["BGFrameID"].replace(".bmp", ".png")
 
                 background = Image.open(bg_frame_id, "r")
                 img.paste(background, (0, 0), background)
 
-            img.save(out.format(page_num))
+            img.save(out.format(page_num.zfill(2)))
 
 
 # TODO: REMOVE
-render("1.jpg", "temp.png")
+render("1.jpg", "Page{}.png")
