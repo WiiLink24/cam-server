@@ -85,13 +85,17 @@ def render(file_name, out):
                 # When possible, we want to localize.
                 if text == "W i i 番 号":
                     text = "Wii Number:"
+                elif text == "電話番号":
+                    text = "Phone Number:"
 
                 try:
                     number = int(text.replace(" ", ""))
                     if len(str(number)) == 16:
                         text = " ".join(re.findall("....", text.replace(" ", "")))
-                    if start_position_x == 358:
-                        start_position_x = 585
+                    if start_position_x == "358":
+                        start_position_x = "585"
+                    elif start_position_x == "388":
+                        start_position_x = "715"
                 except ValueError:
                     pass
 
@@ -112,7 +116,7 @@ def render(file_name, out):
                 background = Image.open(bg_frame_id, "r").convert("RGBA")
                 img.paste(background, (0, 0), background)
 
-            img.save(out.format(page_num.zfill(2)))
+        img.save(out.format(page_num.zfill(2)))
 
 
 # TODO: REMOVE
