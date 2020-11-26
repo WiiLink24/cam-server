@@ -11,6 +11,13 @@ def render(file_name, out):
     config = configparser.ConfigParser()
     config.read_file(buf)
 
+    # Python's ConfigParser takes strings specified with quotes literally.
+    # Before any usage, we want to find values matching this criteria
+    # and proactively strip quotes.
+    for section in config.sections():
+        for key, value in config.items(section):
+            config[section][key] = value.strip('"')
+
     base_info = config["BaseInfo"]
     page_count = int(base_info["PageCount"])
 
@@ -30,56 +37,62 @@ def render(file_name, out):
 
             layer_name = (
                 page_info[f"Layer{page_object}"]
-                .replace('"', "")
+                
                 .replace("Object", "")
                 .split(",")[0]
             )
+
             object_section = config[f"Page{page_num}Object{layer_name}"]
             object_type = int(object_section["ObjectType"])
 
-            zoom = float(object_section["Zoom"]) / 100
-
-            rect_used = object_section["RectUsed"].replace('"', "").split(",")
-
-            frame_width = int(object_section["EffectFrameWidth"])
-            frame_height = int(object_section["EffectFrameHeight"])
-
-            picture = Image.open(file_name, "r")
-            picture_width, picture_height = picture.size
-
-            picture_resized = picture.resize(
-                (frame_width, int(picture_height / (picture_width / frame_width)))
-            )
-
-            mask_im = Image.new(mode="RGB", size=(frame_width, frame_height))
-            mask_im.paste(picture_resized, (0, 0))
-
-            img.paste(
-                mask_im,
-                (
-                    center_point_x - int(frame_width / 2),
-                    center_point_y - int(frame_height / 2),
-                ),
-            )
-
             # Object is a JPEG.
             if object_type == 1:
-                font_color = object_section["FontColor"].replace('"', "").split(",")
-                start_position = (
-                    object_section["StartPosition"].replace('"', "").split(",")
+                zoom = float(object_section["Zoom"]) / 100
+                rect_used = object_section["RectUsed"].split(",")
+                center_point_x, center_point_y = (
+                    object_section["CenterPoint"].split(",")
                 )
-                start_position_x = int(start_position[0])
-                start_position_y = int(start_position[1])
+
+                frame_width = int(object_section["EffectFrameWidth"])
+                frame_height = int(object_section["EffectFrameHeight"])
+
+                picture = Image.open(file_name, "r")
+                picture_width, picture_height = picture.size
+
+                picture_resized = picture.resize(
+                    (frame_width, int(picture_height / (picture_width / frame_width)))
+                )
+
+                mask_im = Image.new(mode="RGB", size=(frame_width, frame_height))
+                mask_im.paste(picture_resized, (0, 0))
+
+                img.paste(
+                    mask_im,
+                    (
+                        int(center_point_x) - int(frame_width / 2),
+                        int(center_point_y) - int(frame_height / 2),
+                    ),
+                )
+
+            # Object is text.
+            elif object_type == 2:
+                font_r, font_g, font_b = (
+                    object_section["FontColor"].split(",")
+                )
+                start_position_x, start_position_y = (
+                    object_section["StartPosition"].split(",")
+                )
+
                 character_width = int(
-                    float(object_section["Ch_Width_Size"].replace('"', ""))
+                    float(object_section["Ch_Width_Size"])
                 )
                 character_height = int(
-                    float(object_section["Ch_Height_Size"].replace('"', ""))
+                    float(object_section["Ch_Height_Size"])
                 )
-                text = object_section["Text"].replace('"', "")
+                text = " ".join(object_section["Text"].split())
 
                 # When possible, we want to localize.
-                if original_wii_number_text(text):
+                if text == "W i i 番 号":
                     text = "Wii Number:"
 
                 try:
@@ -91,36 +104,20 @@ def render(file_name, out):
                 except ValueError:
                     pass
 
-            # Object is text.
-            elif object_type == 2:
-                font_color = object_section["FontColor"].replace('"', "").split(",")
-                start_position = (
-                    object_section["StartPosition"].replace('"', "").split(",")
-                )
-                start_position_x = int(start_position[0])
-                start_position_y = int(start_position[1])
-                character_width = int(
-                    float(object_section["Ch_Width_Size"].replace('"', ""))
-                )
-                character_height = int(
-                    float(object_section["Ch_Height_Size"].replace('"', ""))
-                )
-                text = " ".join(object_section["Text"].replace('"', "").split())
-
                 draw = ImageDraw.Draw(img)
                 font = ImageFont.truetype("FOT-RodinNTLGPro-DB.otf", character_height)
 
                 draw.text(
-                    (start_position_x, start_position_y),
+                    (int(start_position_x), int(start_position_y)),
                     text,
-                    (int(font_color[0]), int(font_color[1]), int(font_color[2])),
+                    (int(font_r), int(font_g), int(font_b)),
                     font,
                 )
 
             # Object is a background.
             elif object_type == 4:
                 bg_frame_id = (
-                    object_section["BGFrameID"].replace('"', "").replace(".bmp", ".jpg")
+                    object_section["BGFrameID"].replace(".bmp", ".jpg")
                 )
 
                 background = Image.open(bg_frame_id, "r")
@@ -128,9 +125,4 @@ def render(file_name, out):
 
             img.save(out.format(page_num))
 
-
-# Best seen as "Wii番号" with odd spacing.
-def original_wii_number_text(text) -> bool:
-    regex = re.compile("W\s{35}i\s{17}i\s{46}番\s{50}号")
-    return regex.match(text) is not None
 
