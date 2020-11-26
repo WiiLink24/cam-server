@@ -1,6 +1,7 @@
 from flask import Flask, request
 app = Flask(__name__)
 debug = True # Enable debug printing
+from render import render
 hardcode_responses = True # Enable hardcoded responses
 class NotImplemented(Exception):
     status_code = 501
@@ -144,10 +145,7 @@ def fileopservlet():
         except:
             print('No JSON')
         print('Headers:',request.headers)
-    jpeg = bytes(request.form['jpegData'])
-    f = open('temp.jpg','wb')
-    f.write(jpeg)
-    f.close()
+    render('temp.png')
     if hardcode_responses:
         return '''
 statusCode=1000
