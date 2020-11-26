@@ -155,11 +155,11 @@ def fileopservlet():
         except:
             print("No JSON")
         print("Headers:", request.headers)
-    jpeg = bytes(request.form['jpegData'])
-    f = open('temp.jpg','wb')
+    jpeg = bytes(request.form["jpegData"])
+    f = open("temp.jpg", "wb")
     f.write(jpeg)
     f.close()
-    render('temp.jpg',"temp.png")
+    render("temp.jpg", "temp.png")
     if hardcode_responses:
         return """
 statusCode=1000

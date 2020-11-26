@@ -4,7 +4,7 @@ import re
 from PIL import Image, ImageDraw, ImageFont
 
 
-def render(file_name,out):
+def render(file_name, out):
     s_config = open("digicamvalues.ini", "r").read().encode().decode("utf-8-sig")
 
     buf = io.StringIO(s_config)
@@ -48,33 +48,58 @@ def render(file_name,out):
             picture = Image.open(file_name, "r")
             picture_width, picture_height = picture.size
 
-            picture_resized = picture.resize((frame_width, int(picture_height / (picture_width / frame_width))))
+            picture_resized = picture.resize(
+                (frame_width, int(picture_height / (picture_width / frame_width)))
+            )
 
             mask_im = Image.new(mode="RGB", size=(frame_width, frame_height))
             mask_im.paste(picture_resized, (0, 0))
 
-            img.paste(mask_im, (center_point_x - int(frame_width / 2), center_point_y - int(frame_height / 2)))
+            img.paste(
+                mask_im,
+                (
+                    center_point_x - int(frame_width / 2),
+                    center_point_y - int(frame_height / 2),
+                ),
+            )
 
-        elif object_type == 2:
-            font_color = object_section["FontColor"].replace('"', "").split(",")
-            start_position = object_section["StartPosition"].replace('"', "").split(",")
-            start_position_x = int(start_position[0])
-            start_position_y = int(start_position[1])
-            character_width = int(float(object_section["Ch_Width_Size"].replace('"', "")))
-            character_height = int(float(object_section["Ch_Height_Size"].replace('"', "")))    
-            text = object_section["Text"].replace('"', "")
+            if object_type == 1:
+                font_color = object_section["FontColor"].replace('"', "").split(",")
+                start_position = (
+                    object_section["StartPosition"].replace('"', "").split(",")
+                )
+                start_position_x = int(start_position[0])
+                start_position_y = int(start_position[1])
+                character_width = int(
+                    float(object_section["Ch_Width_Size"].replace('"', ""))
+                )
+                character_height = int(
+                    float(object_section["Ch_Height_Size"].replace('"', ""))
+                )
+                text = object_section["Text"].replace('"', "")
 
-            if text == "W" + (" " * 35) + "i" + (" " * 17) + "i" + (" " * 46) + "番" + (" " * 50) + "号":
-                text = "Wii Number:"
+                if (
+                    text
+                    == "W"
+                    + (" " * 35)
+                    + "i"
+                    + (" " * 17)
+                    + "i"
+                    + (" " * 46)
+                    + "番"
+                    + (" " * 50)
+                    + "号"
+                ):
+                    text = "Wii Number:"
 
-            try:
-                number = int(text.replace(" ", ""))
-                if len(str(number)) == 16:
-                    text = " ".join(re.findall('....', text.replace(" ", "")))
-                if start_position_x == 358:
-                    start_position_x = 585
-            except ValueError:
-                pass
+                try:
+                    number = int(text.replace(" ", ""))
+                    if len(str(number)) == 16:
+                        text = " ".join(re.findall("....", text.replace(" ", "")))
+                    if start_position_x == 358:
+                        start_position_x = 585
+                except ValueError:
+                    pass
 
             elif object_type == 2:
                 font_color = object_section["FontColor"].replace('"', "").split(",")
