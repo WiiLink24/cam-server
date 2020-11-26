@@ -4,7 +4,7 @@ import re
 from PIL import Image, ImageDraw, ImageFont
 
 
-def render(out):
+def render(file_name,out):
     s_config = open("digicamvalues.ini", "r").read().encode().decode("utf-8-sig")
 
     buf = io.StringIO(s_config)
