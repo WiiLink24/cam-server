@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 def render(file_name, out):
-    s_config = open("digicamvalues2.ini", "r").read().encode().decode("utf-8-sig")
+    s_config = open("digicamvalues.ini", "r").read().encode().decode("utf-8-sig")
 
     buf = io.StringIO(s_config)
     config = configparser.ConfigParser()
@@ -107,9 +107,9 @@ def render(file_name, out):
 
             # Object is a background.
             elif object_type == 4:
-                bg_frame_id = object_section["BGFrameID"].replace(".bmp", ".png")
+                bg_frame_id = "templates/" + object_section["BGFrameID"].replace(".bmp", ".png")
 
-                background = Image.open(bg_frame_id, "r")
+                background = Image.open(bg_frame_id, "r").convert("RGBA")
                 img.paste(background, (0, 0), background)
 
             img.save(out.format(page_num.zfill(2)))
