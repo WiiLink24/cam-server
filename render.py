@@ -96,7 +96,7 @@ def render(file_name, out):
                     pass
 
                 draw = ImageDraw.Draw(img)
-                font = ImageFont.truetype("FOT-RodinNTLGPro-DB.otf", character_height)
+                font = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.otf", character_height)
 
                 draw.text(
                     (int(start_position_x), int(start_position_y)),
