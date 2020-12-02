@@ -131,7 +131,7 @@ def render(file_name, out):
                 try:
                     number = int(text.replace(" ", ""))
                     if len(str(number)) == 16:
-                        text = " ".join(re.findall("....", text.replace(" ", "")))
+                        text = " ".join(re.findall("....", text.replace(" ", ""))) # remove extra spaces
                     if start_position_x == "358":
                         start_position_x = "585"
                     elif start_position_x == "388":
