@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 def render(file_name, out):
-    s_config = open("digicamvalues.ini", "r").read().encode().decode("utf-8-sig")
+    s_config = open("digicamvaluesa.ini", "r").read().encode().decode("utf-8-sig")
 
     buf = io.StringIO(s_config)
     config = configparser.ConfigParser()
@@ -20,6 +20,11 @@ def render(file_name, out):
 
     base_info = config["BaseInfo"]
     page_count = int(base_info["PageCount"])
+    service_type = int(base_info["ServiceType"])
+
+    service_types = {2: "Photo Book", 3: "Business Card"}
+
+    print("Print Type: {}\n".format(service_types[service_type]))
 
     for page_num in range(1, page_count + 1):
         page_num = f"{page_num:02}"
@@ -29,7 +34,32 @@ def render(file_name, out):
         print_size_width = int(page_info["PrintSizeWidth"])
         print_size_height = int(page_info["PrintSizeHeight"])
 
-        img = Image.new(mode="RGB", size=(print_size_width, print_size_height))
+        background_filename = page_info["BackGroundFileName"]
+        if "," not in background_filename:
+            background_color = (0, 0, 0)
+        else:
+            background_color = background_filename.split(",")
+            background_color = (
+                int(background_color[0]),
+                int(background_color[1]),
+                int(background_color[2]),
+            )
+
+        img = Image.new(
+            mode="RGB",
+            size=(print_size_width, print_size_height),
+            color=background_color,
+        )
+
+        if (
+            ".bmp" in background_filename
+        ):  # this applies to the square type photo book, it's annoying they put the background in this field
+            bg_frame_id = "templates/{}".format(
+                background_filename.replace(".bmp", ".png")
+            )
+
+            background = Image.open(bg_frame_id, "r").convert("RGBA")
+            img.paste(background, (0, 0), background)
 
         for page_object in range(1, page_objects_count + 1):
             # Pad to two zeros where possible.
@@ -60,7 +90,11 @@ def render(file_name, out):
                     (int(picture_width * zoom), int(picture_height * zoom))
                 )
 
-                mask_im = Image.new(mode="RGB", size=(frame_width, frame_height))
+                mask_im = Image.new(
+                    mode="RGB",
+                    size=(int(picture_width * zoom), frame_height),
+                    color=background_color,
+                )
                 mask_im.paste(
                     picture_resized,
                     (
@@ -119,14 +153,16 @@ def render(file_name, out):
 
             # Object is a background.
             elif object_type == 4:
-                bg_frame_id = "templates/" + object_section["BGFrameID"].replace(
-                    ".bmp", ".png"
+                bg_frame_id = "templates/{}".format(
+                    object_section["BGFrameID"].replace(".bmp", ".png")
                 )
 
                 background = Image.open(bg_frame_id, "r").convert("RGBA")
                 img.paste(background, (0, 0), background)
 
         img.save(out.format(page_num.zfill(2)))
+
+        print("Processed Page{}.png".format(page_num.zfill(2)))
 
 
 # TODO: REMOVE
