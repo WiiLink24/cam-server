@@ -61,12 +61,18 @@ def render(file_name, out):
                 )
 
                 mask_im = Image.new(mode="RGB", size=(frame_width, frame_height))
-                mask_im.paste(picture_resized, (int(int(rect_used[0]) * (zoom * -1)), int(int(rect_used[1]) * (zoom * -1))))
+                mask_im.paste(
+                    picture_resized,
+                    (
+                        int(int(rect_used[0]) * (zoom * -1)),
+                        int(int(rect_used[1]) * (zoom * -1)),
+                    ),
+                )
 
                 img.paste(
                     mask_im,
                     (
-                        int(center_point_x) - int(frame_width / 2),
+                        int(center_point_x) - int(int(picture_width * zoom) / 2),
                         int(center_point_y) - int(frame_height / 2),
                     ),
                 )
@@ -100,7 +106,9 @@ def render(file_name, out):
                     pass
 
                 draw = ImageDraw.Draw(img)
-                font = ImageFont.truetype("fonts/FOT-RodinNTLGPro-DB.otf", character_height)
+                font = ImageFont.truetype(
+                    "fonts/FOT-RodinNTLGPro-DB.otf", character_height
+                )
 
                 draw.text(
                     (int(start_position_x), int(start_position_y)),
@@ -111,7 +119,9 @@ def render(file_name, out):
 
             # Object is a background.
             elif object_type == 4:
-                bg_frame_id = "templates/" + object_section["BGFrameID"].replace(".bmp", ".png")
+                bg_frame_id = "templates/" + object_section["BGFrameID"].replace(
+                    ".bmp", ".png"
+                )
 
                 background = Image.open(bg_frame_id, "r").convert("RGBA")
                 img.paste(background, (0, 0), background)
