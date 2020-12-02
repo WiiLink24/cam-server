@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 def render(file_name, out):
-    s_config = open("digicamvaluesa.ini", "r").read().encode().decode("utf-8-sig")
+    s_config = open("digicamvalues.ini", "r").read().encode().decode("utf-8-sig")
 
     buf = io.StringIO(s_config)
     config = configparser.ConfigParser()
