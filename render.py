@@ -1,5 +1,6 @@
 import configparser
 import io
+import pngquant
 import re
 from PIL import Image, ImageDraw, ImageFont
 
@@ -160,7 +161,13 @@ def render(file_name, out):
                 background = Image.open(bg_frame_id, "r").convert("RGBA")
                 img.paste(background, (0, 0), background)
 
-        img.save(out.format(page_num.zfill(2)))
+        filename = out.format(page_num.zfill(2))
+        
+        img.save(filename, optimize=True)
+
+        # compress the image
+        pngquant.config("/usr/local/bin/pngquant", speed=11)
+        pngquant.quant_image(filename)
 
         print("Processed Page{}.png".format(page_num.zfill(2)))
 

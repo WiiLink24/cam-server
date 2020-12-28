@@ -1,3 +1,4 @@
 configparser
 Flask>=1.1
 Pillow>=8.0
+pngquant
