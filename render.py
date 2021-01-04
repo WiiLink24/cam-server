@@ -1,6 +1,5 @@
 import configparser
 import io
-import pngquant
 import re
 from PIL import Image, ImageDraw, ImageFont
 
@@ -132,7 +131,9 @@ def render(file_name, out):
                 try:
                     number = int(text.replace(" ", ""))
                     if len(str(number)) == 16:
-                        text = " ".join(re.findall("....", text.replace(" ", ""))) # remove extra spaces
+                        text = " ".join(
+                            re.findall("....", text.replace(" ", ""))
+                        )  # remove extra spaces
                     if start_position_x == "358":
                         start_position_x = "585"
                     elif start_position_x == "388":
@@ -162,15 +163,12 @@ def render(file_name, out):
                 img.paste(background, (0, 0), background)
 
         filename = out.format(page_num.zfill(2))
-        
+
+        img = img.quantize(method=2)
         img.save(filename, optimize=True)
-
-        # compress the image
-        pngquant.config("/usr/local/bin/pngquant", speed=11)
-        pngquant.quant_image(filename)
-
         print("Processed Page{}.png".format(page_num.zfill(2)))
 
 
 # TODO: REMOVE
-render("1.jpg", "Page{}.png")
+if __name__ == "__main__":
+    render("1.jpg", "Page{}.png")

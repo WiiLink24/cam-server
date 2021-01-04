@@ -131,3 +131,9 @@ dmypy.json
 .idea
 
 .DS_Store
+
+# Stray assets
+*.png
+*.jpg
+*.otf
+*.ini
