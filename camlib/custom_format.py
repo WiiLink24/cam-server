@@ -6,7 +6,6 @@ def response():
     def decorator(func):
         @functools.wraps(func)
         def serialization_wrapper(*args, **kwargs):
-            print("hi")
             returned_value = func(*args, **kwargs)
 
             # Ensure we are truly dealing with a dictionary.

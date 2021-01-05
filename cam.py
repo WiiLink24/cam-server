@@ -1,9 +1,12 @@
-import flask
 from flask import Flask, request
 from werkzeug import exceptions
 
-from camlib import response
-from routes import get_item_information
+from routes import (
+    get_item_information,
+    get_exemption_information,
+    get_order_id,
+    notice_order_finish,
+)
 
 app = Flask(__name__)
 debug = True  # Enable debug printing
@@ -26,7 +29,12 @@ class NotImplemented(Exception):
         return rv
 
 
-action_list = {"getItemInformation": get_item_information}
+action_list = {
+    "getItemInformation": get_item_information,
+    "getExemptionInformation": get_exemption_information,
+    "getOrderID": get_order_id,
+    "noticeOrderFinish": notice_order_finish,
+}
 
 
 @app.route("/wii_svr/WPOperationServlet", methods=["GET", "POST"])
@@ -44,7 +52,7 @@ def op_servlet():
 
 
 @app.route("/wii_svr/WPFileOperationServlet", methods=["GET", "POST"])
-def fileopservlet():
+def file_op_servlet():
     if debug:
         print("Arguments:", request.args)
         try:

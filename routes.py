@@ -16,7 +16,15 @@ def get_item_information(_):
             "00006",
             "00007",
         ],
-        "itemName": ["As", "I", "sit", "I", "watch", "the", "sky"],
+        "itemName": [
+            "Item one",
+            "Item two",
+            "Item three",
+            "Item four",
+            "Item five",
+            "Item six",
+            "Iterm seven",
+        ],
         "itemComment1": ["The", "fire", "burns", "I", "shut", "my", "eyes"],
         "itemComment2": [
             "but this",
@@ -35,4 +43,37 @@ def get_item_information(_):
         "pageCountDisp": [10, 10, 10, 10, 10, 10],
         "priceUnit": [1, 1, 1, 1, 1, 1],
         "delivery": [1, 1, 1, 1, 1, 1],
+    }
+
+
+@response()
+def get_exemption_information(_):
+    return {
+        "errorItems": [0, 0, 0, 0],
+        "message": "Everything is free! Congratulations!",
+        "exemptionID": "YOO",
+        "exemptionTEXT": "Congratulations on the free everything! Valid from now until the server crashes.",
+    }
+
+
+@response()
+def get_order_id(_):
+    return {
+        "errorItems": [0, 0, 0, 0],
+        "message": "Everything is free! Congratulations!",
+        "exemptionID": "YOO",
+        "exemptionTEXT": "Congratulations on the free everything! Valid from now until the server crashes.",
+        "available": "a",
+        "orderID": "1000",
+    }
+
+
+@response()
+def notice_order_finish(_):
+    return {
+        "errorItems": [0],
+        "message": "woohoo",
+        "available": 0,
+        "fixOrderText": "Your order is finished congratulations omg",
+        "messageBoardText": "YEAHHH",
     }
