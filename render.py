@@ -54,7 +54,7 @@ def render(file_name, out):
         if (
             ".bmp" in background_filename
         ):  # this applies to the square type photo book, it's annoying they put the background in this field
-            bg_frame_id = "templates/{}".format(
+            bg_frame_id = "assets/templates/{}".format(
                 background_filename.replace(".bmp", ".png")
             )
 
@@ -143,7 +143,7 @@ def render(file_name, out):
 
                 draw = ImageDraw.Draw(img)
                 font = ImageFont.truetype(
-                    "fonts/FOT-RodinNTLGPro-DB.otf", character_height
+                    "assets/fonts/FOT-RodinNTLGPro-DB.otf", character_height
                 )
 
                 draw.text(
@@ -155,7 +155,7 @@ def render(file_name, out):
 
             # Object is a background.
             elif object_type == 4:
-                bg_frame_id = "templates/{}".format(
+                bg_frame_id = "assets/templates/{}".format(
                     object_section["BGFrameID"].replace(".bmp", ".png")
                 )
 
