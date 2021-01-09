@@ -1,5 +1,14 @@
-from flask import Flask, request
+# Required to allow reading of jpegData. Flask must be imported after this code.
+from werkzeug import formparser
+
+from camlib import response
+from formparser_override import parse_multipart_headers_fix
+
+formparser.parse_multipart_headers = parse_multipart_headers_fix
+
+# Now we can continue.
 from werkzeug import exceptions
+from flask import Flask, request
 
 from routes import (
     get_item_information,
@@ -7,27 +16,12 @@ from routes import (
     get_order_id,
     notice_order_finish,
 )
-
-app = Flask(__name__)
-debug = True  # Enable debug printing
 import render
 
+app = Flask(__name__)
 
-class NotImplemented(Exception):
-    status_code = 501
-
-    def __init__(self, message, status_code=None, payload=None):
-        Exception.__init__(self)
-        self.message = message
-        if status_code is not None:
-            self.status_code = status_code
-        self.payload = payload
-
-    def to_dict(self):
-        rv = dict(self.payload or ())
-        rv["message"] = self.message
-        return rv
-
+# Enable debug printing
+debug = True
 
 action_list = {
     "getItemInformation": get_item_information,
@@ -52,26 +46,16 @@ def op_servlet():
 
 
 @app.route("/wii_svr/WPFileOperationServlet", methods=["GET", "POST"])
+@response()
 def file_op_servlet():
     if debug:
         print("Arguments:", request.args)
-        try:
-            print("JSON:", request.json())
-        except:
-            print("No JSON")
         print("Headers:", request.headers)
-    jpeg = bytes(request.form["jpegData"])
-    f = open("temp.jpg", "wb")
-    f.write(jpeg)
-    f.close()
-    render("temp.jpg", "temp.png")
-    if hardcode_responses:
-        return """
-statusCode=1000
-latestClientVersion=0x02
-errorItems_1=0
-message=a
-imageID=1
-        """
 
-    return NotImplemented("Please enable hardcoded responses", status_code=501)
+    # TODO: validate
+    # TODO: request.files["jpegData"].read()
+    return {
+        "errorItems_1": 0,
+        "message": "a",
+        "imageID": 1,
+    }
