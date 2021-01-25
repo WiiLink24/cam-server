@@ -21,7 +21,7 @@ import render
 app = Flask(__name__)
 
 # Enable debug printing
-debug = True
+debug = __name__ == "__main__"
 
 action_list = {
     "getItemInformation": get_item_information,
