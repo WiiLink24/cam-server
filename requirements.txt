@@ -1,3 +1,6 @@
 configparser
 Flask>=1.1
-Pillow>=8.0
+# When updating, please ensure the corresponding Pillow-SIMD
+# version is also available. (See Dockerfile.)
+Pillow-SIMD>=7.0; platform_machine == 'x86_64'
+Pillow>=7.0; platform_machine != 'x86_64'
