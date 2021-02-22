@@ -23,7 +23,7 @@ def get_item_information(_):
             "Item four",
             "Item five",
             "Item six",
-            "Iterm seven",
+            "Item seven",
         ],
         "itemComment1": ["The", "fire", "burns", "I", "shut", "my", "eyes"],
         "itemComment2": [
