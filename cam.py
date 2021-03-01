@@ -16,8 +16,9 @@ from routes import (
     get_order_id,
     notice_order_finish,
 )
-import render
+import render, sender
 
+TEST_EMAIL = '<email>@<email>.com'
 app = Flask(__name__)
 
 # Enable debug printing
@@ -48,6 +49,7 @@ def op_servlet():
 @app.route("/wii_svr/WPFileOperationServlet", methods=["GET", "POST"])
 @response()
 def file_op_servlet():
+    global TEST_EMAIL
     if debug:
         print("Arguments:", request.args)
         print("Headers:", request.headers)
@@ -55,6 +57,7 @@ def file_op_servlet():
     # TODO: validate
     open('temp.jpg', mode='wb').write(request.files["jpegData"].read())
     render.render('temp.jpg', 'Page{}.jpg')
+    sender.digicam_sender('Page0.jpg', TEST_EMAIL)
     return {
         "errorItems_1": 0,
         "message": "a",
