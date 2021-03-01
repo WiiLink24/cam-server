@@ -54,6 +54,7 @@ def file_op_servlet():
 
     # TODO: validate
     open('temp.jpg', mode='wb').write(request.files["jpegData"].read())
+    render.render('temp.jpg', 'Page{}.jpg')
     return {
         "errorItems_1": 0,
         "message": "a",
