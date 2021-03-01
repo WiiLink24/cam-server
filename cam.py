@@ -1,4 +1,6 @@
 # Required to allow reading of jpegData. Flask must be imported after this code.
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug import formparser
 
 from camlib import response
@@ -16,9 +18,24 @@ from routes import (
     get_order_id,
     notice_order_finish,
 )
+
+# Import crucial components
+import config
 import render
 
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = config.db_url
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db = SQLAlchemy()
+import models
+
+
+# Create schema and migrate accordingly
+migrate = Migrate(app, db, compare_type=True)
+with app.test_request_context():
+    db.init_app(app)
+    db.create_all()
 
 # Enable debug printing
 debug = __name__ == "__main__"
