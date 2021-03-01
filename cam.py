@@ -53,7 +53,7 @@ def file_op_servlet():
         print("Headers:", request.headers)
 
     # TODO: validate
-    # TODO: request.files["jpegData"].read()
+    open('temp.jpg', mode='wb').write(request.files["jpegData"].read())
     return {
         "errorItems_1": 0,
         "message": "a",
