@@ -17,7 +17,6 @@ from flask import Flask, request
 # Import crucial components
 import config
 import render
-from routes import action_list
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = config.db_url
@@ -36,6 +35,8 @@ with app.test_request_context():
 debug = app.debug
 if debug:
     colorama.init()
+
+from routes import action_list
 
 
 @app.route("/wii_svr/WPOperationServlet", methods=["GET", "POST"])
