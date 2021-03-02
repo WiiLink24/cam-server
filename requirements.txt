@@ -5,3 +5,4 @@ flask_sqlalchemy>=2.4
 flask-migrate>=2.5
 Pillow-SIMD>=7.0; platform_machine == 'x86_64'
 Pillow>=7.0; platform_machine != 'x86_64'
+colorama>=0.4

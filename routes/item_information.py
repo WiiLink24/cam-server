@@ -44,36 +44,3 @@ def get_item_information(_):
         "priceUnit": [1, 1, 1, 1, 1, 1],
         "delivery": [1, 1, 1, 1, 1, 1],
     }
-
-
-@response()
-def get_exemption_information(_):
-    return {
-        "errorItems": [0, 0, 0, 0],
-        "message": "Everything is free! Congratulations!",
-        "exemptionID": "YOO",
-        "exemptionTEXT": "Congratulations on the free everything! Valid from now until the server crashes.",
-    }
-
-
-@response()
-def get_order_id(_):
-    return {
-        "errorItems": [0, 0, 0, 0],
-        "message": "Everything is free! Congratulations!",
-        "exemptionID": "YOO",
-        "exemptionTEXT": "Congratulations on the free everything! Valid from now until the server crashes.",
-        "available": "a",
-        "orderID": "1000",
-    }
-
-
-@response()
-def notice_order_finish(_):
-    return {
-        "errorItems": [0],
-        "message": "woohoo",
-        "available": 0,
-        "fixOrderText": "Your order is finished congratulations omg",
-        "messageBoardText": "YEAHHH",
-    }
