@@ -14,3 +14,4 @@ class Images(db.Model):
     order_id = db.Column(
         db.String(14), db.ForeignKey("orders.order_id"), nullable=False
     )
+    filename = db.Column(db.String, nullable=False)

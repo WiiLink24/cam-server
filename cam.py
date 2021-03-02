@@ -36,7 +36,7 @@ debug = app.debug
 if debug:
     colorama.init()
 
-from routes import action_list
+from routes import action_list, file_action_list
 
 
 @app.route("/wii_svr/WPOperationServlet", methods=["GET", "POST"])
@@ -58,10 +58,8 @@ def file_op_servlet():
     if debug:
         request_dump(request)
 
-    # TODO: validate
-    # TODO: request.files["jpegData"].read()
-    return {
-        "errorItems_1": 0,
-        "message": "a",
-        "imageID": 1,
-    }
+    try:
+        action = request.headers["Operation"]
+        return file_action_list[action](request)
+    except KeyError:
+        return exceptions.NotFound()
