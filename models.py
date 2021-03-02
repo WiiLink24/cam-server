@@ -6,6 +6,7 @@ from cam import db
 class Orders(db.Model):
     order_id = db.Column(db.String(8), primary_key=True, unique=True)
     date_created = db.Column(db.DateTime, default=datetime.now(), nullable=False)
+    complete = db.Column(db.Boolean, default=False, nullable=False)
 
 
 class Images(db.Model):
