@@ -7,7 +7,6 @@ from werkzeug import formparser
 from camlib import response
 from debug import request_dump
 from formparser_override import parse_multipart_headers_fix
-from routes.item_information import get_item_information
 
 formparser.parse_multipart_headers = parse_multipart_headers_fix
 
