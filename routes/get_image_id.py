@@ -45,7 +45,7 @@ def get_image_id(request):
     db.session.commit()
 
     return {
-        "orderID": unique_id,
+        "imageID": unique_id,
     }
 
 
