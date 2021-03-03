@@ -42,7 +42,7 @@ item_data.add(
 )
 item_data.add(
     ItemInfo(
-        itemName="Unknown",
-        itemComment1="Where does this message show up?",
+        itemName="Club Rocket",
+        itemComment1="Order exclusive items.",
     )
 )
