@@ -18,8 +18,6 @@ def get_order_id(_):
     db.session.commit()
 
     return {
-        "errorItems": [0, 0, 0, 0],
-        "message": "Everything is free!",
         "exemptionID": "YOO",
         "exemptionTEXT": "Everything is free! You get a photo, you get a photo, and you get a photo.",
         "available": 1,

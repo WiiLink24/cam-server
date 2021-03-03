@@ -16,6 +16,14 @@ def response():
                     "latestClientVersion": "0x02",
                 }
 
+                # Most requests have 4 empty errors for unknown reasons.
+                if "errorItems" not in response_dict:
+                    response_dict["errorItems"] = [0, 0, 0, 0]
+
+                # This is only used with errors.
+                if "message" not in response_dict:
+                    response_dict["message"] = ""
+
                 response_dict.update(returned_value)
 
                 return dict_to_custom_format(response_dict)

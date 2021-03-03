@@ -18,7 +18,7 @@ def get_image_id(request):
         return exceptions.BadRequest()
 
     # Ensure we have an image.
-    if not request.files["jpegData"]:
+    if "jpegData" not in request.files:
         return exceptions.BadRequest()
 
     # Ensure the order ID is valid before further processing.
@@ -45,8 +45,6 @@ def get_image_id(request):
     db.session.commit()
 
     return {
-        "errorItems": [0, 0, 0, 0],
-        "message": "All good.",
         "orderID": unique_id,
     }
 
