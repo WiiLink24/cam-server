@@ -137,6 +137,7 @@ dmypy.json
 *.jpg
 *.otf
 *.ini
+!migrations/alembic.ini
 assets
 orders
 

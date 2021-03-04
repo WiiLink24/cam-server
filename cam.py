@@ -1,5 +1,6 @@
 # Required to allow reading of jpegData. Flask must be imported after this code.
 import colorama
+import flask_migrate
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug import formparser
@@ -30,6 +31,8 @@ migrate = Migrate(app, db, compare_type=True)
 with app.test_request_context():
     db.init_app(app)
     db.create_all()
+
+    flask_migrate.upgrade()
 
 # Enable debug printing
 debug = app.debug
