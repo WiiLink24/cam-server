@@ -17,11 +17,11 @@ def response():
                 }
 
                 # Most requests have 4 empty errors for unknown reasons.
-                if "errorItems" not in response_dict:
+                if "errorItems" not in returned_value:
                     response_dict["errorItems"] = [0, 0, 0, 0]
 
                 # This is only used with errors.
-                if "message" not in response_dict:
+                if "message" not in returned_value:
                     response_dict["message"] = ""
 
                 response_dict.update(returned_value)

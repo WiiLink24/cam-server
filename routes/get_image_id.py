@@ -4,26 +4,23 @@ from werkzeug import exceptions
 from werkzeug.utils import secure_filename
 
 from cam import db
-from camlib import response
-from models import Images, Orders
+from camlib import response, item_wrapper, current_order
+from models import Images
 from routes.utils import generate_unique_id
 
 
 @response()
+# For unknown reasons, this is the only request with such a name.
+@item_wrapper(item_code_name="itemCode")
 def get_image_id(request):
-    # Get common parameters
+    # Get our desired filename.
     uploading_filename = request.form.get("imageFileName")
-    order_id = request.form.get("orderID")
-    if not uploading_filename or not order_id:
+    if not uploading_filename:
         return exceptions.BadRequest()
 
     # Ensure we have an image.
     if "jpegData" not in request.files:
         return exceptions.BadRequest()
-
-    # Ensure the order ID is valid before further processing.
-    if not Orders.query.filter_by(order_id=order_id).first():
-        return exceptions.Forbidden()
 
     # Sanitize for when we write to disk.
     filename = secure_filename(uploading_filename)
@@ -36,12 +33,15 @@ def get_image_id(request):
     if unique_id == "":
         return exceptions.InternalServerError()
 
+    # Next, save our file to disk.
     jpeg_image = request.files["jpegData"]
-    jpeg_image.save(determine_path(order_id, filename))
+    jpeg_image.save(determine_path(current_order.order_id, filename))
 
     # Finally, save state to the database.
-    current_order = Images(image_id=unique_id, order_id=order_id, filename=filename)
-    db.session.add(current_order)
+    added_image = Images(
+        image_id=unique_id, order_id=current_order.order_id, filename=filename
+    )
+    db.session.add(added_image)
     db.session.commit()
 
     return {

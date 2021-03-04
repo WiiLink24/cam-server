@@ -4,7 +4,6 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug import formparser
 
-from camlib import response
 from debug import request_dump
 from formparser_override import parse_multipart_headers_fix
 
@@ -36,6 +35,8 @@ debug = app.debug
 if debug:
     colorama.init()
 
+# These require database access.
+from camlib import response
 from routes import action_list, file_action_list
 
 

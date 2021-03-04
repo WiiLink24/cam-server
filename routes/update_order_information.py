@@ -1,35 +1,26 @@
 from werkzeug import exceptions
 
 from cam import db
-from camlib import response, item_data
-from models import Orders
+from camlib import response, item_wrapper, current_item, current_order
 
 
 @response()
+@item_wrapper()
 def update_order_information(request):
-    order_id = request.form.get("orderID")
-    item_code = request.form.get("itemCode_1")
+    # Ensure we have an email to work with.
     email = request.form.get("email")
-    if not order_id or not item_code or not email:
+    if not email:
         return exceptions.BadRequest()
 
-    current_order = Orders.query.filter_by(order_id=order_id).first()
-    if not current_order:
-        return exceptions.Forbidden()
-
+    # Update our current order to include an email.
     current_order.email = email
     db.session.commit()
 
-    # We only need a subset of the full item data.
-    current_item = item_data.get_item(item_code)
-    if not current_item:
-        return exceptions.BadRequest()
-
     eventual_response = {
         "available": 1,
-        "itemCode": item_code,
-        "itemPriceCode": item_code,
-        "orderID": order_id,
+        "itemCode": current_item.itemCode,
+        "itemPriceCode": current_item.itemCode,
+        "orderID": current_order.order_id,
         "orderDate": "today",
         "commodityCount": [1],
         "commodityPrice": [100000000],

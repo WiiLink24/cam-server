@@ -1,35 +1,19 @@
-from werkzeug import exceptions
-
 from cam import db
-from camlib import response, item_data
-from models import Orders
+from camlib import response, item_wrapper, current_order, current_item
 
 
 @response()
-def fix_order_information(request):
-    order_id = request.form.get("orderID")
-    item_code = request.form.get("itemCode_1")
-    if not order_id or not item_code:
-        return exceptions.BadRequest()
-
-    current_order = Orders.query.filter_by(order_id=order_id).first()
-    if not current_order:
-        return exceptions.Forbidden()
-
+@item_wrapper()
+def fix_order_information(request, item_code=None):
     # TODO: Start rendering of order
     current_order.complete = True
     db.session.commit()
-
-    # We only need a subset of the full item data.
-    current_item = item_data.get_item(item_code)
-    if not current_item:
-        return exceptions.BadRequest()
 
     eventual_response = {
         "available": 1,
         "itemCode": item_code,
         "itemPriceCode": item_code,
-        "orderID": order_id,
+        "orderID": current_order.order_id,
         "orderDate": "today",
         "commodityCount": [1],
         "commodityPrice": [100000000],
