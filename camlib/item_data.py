@@ -18,8 +18,8 @@ item_data.add(
 )
 item_data.add(
     ItemInfo(
-        itemName="Calendar",
-        itemComment1="Create a calendar that anyone can love and enjoy.",
+        itemName="Photo Album",
+        itemComment1="A fun album that everyone will love.",
     )
 )
 item_data.add(
@@ -30,14 +30,14 @@ item_data.add(
 )
 item_data.add(
     ItemInfo(
-        itemName="Business Card",
-        itemComment1="The perfect business card!",
+        itemName="Calendar",
+        itemComment1="Create a calendar that anyone can love and enjoy.",
     )
 )
 item_data.add(
     ItemInfo(
-        itemName="Photo Album",
-        itemComment1="A fun album that everyone will love.",
+        itemName="Business Card",
+        itemComment1="The perfect business card!",
     )
 )
 item_data.add(
