@@ -24,8 +24,8 @@ item_data.add(
 )
 item_data.add(
     ItemInfo(
-        itemName="Photo Album",
-        itemComment1="A fun album that everyone will love.",
+        itemName="Mii Card",
+        itemComment1="It's as if you were on a business card.",
     )
 )
 item_data.add(
@@ -36,8 +36,8 @@ item_data.add(
 )
 item_data.add(
     ItemInfo(
-        itemName="Mii Card",
-        itemComment1="It's as if you were on a business card.",
+        itemName="Photo Album",
+        itemComment1="A fun album that everyone will love.",
     )
 )
 item_data.add(
