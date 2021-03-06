@@ -1,18 +1,19 @@
-from cam import db
+from cam import db, app
 from camlib import response, item_wrapper, current_order, current_item
+from render import render
 
 
 @response()
 @item_wrapper()
-def fix_order_information(request, item_code=None):
-    # TODO: Start rendering of order
+def fix_order_information(_):
     current_order.complete = True
     db.session.commit()
 
+        render(current_order.order_schema, current_order.order_id)
     eventual_response = {
         "available": 1,
-        "itemCode": item_code,
-        "itemPriceCode": item_code,
+        "itemCode": current_item.itemCode,
+        "itemPriceCode": current_item.itemCode,
         "orderID": current_order.order_id,
         "orderDate": "today",
         "commodityCount": [1],

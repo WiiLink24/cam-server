@@ -15,7 +15,6 @@ from flask import Flask, request
 
 # Import crucial components
 import config
-import render
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = config.db_url
@@ -38,6 +37,7 @@ if debug:
 # These require database access.
 from camlib import response
 from routes import action_list, file_action_list
+import render
 
 
 @app.route("/wii_svr/WPOperationServlet", methods=["GET", "POST"])

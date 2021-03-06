@@ -22,16 +22,12 @@ def get_image_id(request):
     if "jpegData" not in request.files:
         return exceptions.BadRequest()
 
-    # Sanitize for when we write to disk.
-    filename = secure_filename(uploading_filename)
-    # Necessary as render templates require the original filename with ".jpg" appended.
-    # Nobody here is fond of this.
-    filename += ".jpg"
-
     # An image ID has a maximum size of 7.
     unique_id = generate_unique_id(Images, Images.image_id, 7)
     if unique_id == "":
         return exceptions.InternalServerError()
+
+    filename = f"{unique_id}.jpg"
 
     # Next, save our file to disk.
     jpeg_image = request.files["jpegData"]
