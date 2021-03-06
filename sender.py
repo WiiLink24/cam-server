@@ -1,6 +1,7 @@
 # Sends an image to a designated user over email
 # TODO: Address concerns about file size and whether to store them on an external server
 # and if we do, address concerns about user privacy, possibly IP locking them?
+import binascii
 import config
 from sendgrid.helpers.mail import (
     Mail,
