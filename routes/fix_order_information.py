@@ -9,7 +9,12 @@ def fix_order_information(_):
     current_order.complete = True
     db.session.commit()
 
-    render(current_order.order_schema, current_order.order_id)
+    try:
+        render(current_order.order_schema, current_order.order_id)
+    except Exception as e:
+        app.logger.exception(e)
+        return ""
+
     eventual_response = {
         "available": 1,
         "itemCode": current_item.itemCode,

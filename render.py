@@ -15,7 +15,17 @@ class ObjectTypes(enum.Enum):
     BACKGROUND = "4"
 
 
-def render(order_schema: str, order_id: str, out="todo-remove/"):
+def parse_coords(coordinates: str) -> (int, int):
+    x, y = coordinates.split(",")
+    return int(x), int(y)
+
+
+def parse_rgb(color: str) -> (int, int, int):
+    r, g, b = color.split(",")
+    return int(r), int(g), int(b)
+
+
+def render(order_schema: str, order_id: str):
     s_config = order_schema.encode().decode("utf-8-sig")
 
     buf = io.StringIO(s_config)
@@ -47,20 +57,18 @@ def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str)
     padded_page_num = f"{page_num:02}"
     page_info = config[f"Page{padded_page_num}Info"]
 
-    page_objects_count = int(page_info["PageObjectsCount"])
-    print_size_width = int(page_info["PrintSizeWidth"])
-    print_size_height = int(page_info["PrintSizeHeight"])
-
     # This field can contain "255,255,255" or a filename for a template.
     background_filename = page_info["BackGroundFileName"]
     if "," not in background_filename:
-        # Black ("255,255,255,") is the only color sent by the client.
+        # Black ("255,255,255") is the only color sent by the client.
         background_color = (255, 255, 255)
     else:
         # If we're not given a color, default to black.
         background_color = (0, 0, 0)
 
     # This image represents one for the entire page.
+    print_size_width = int(page_info["PrintSizeWidth"])
+    print_size_height = int(page_info["PrintSizeHeight"])
     page_img = Image.new(
         mode="RGB",
         size=(print_size_width, print_size_height),
@@ -76,20 +84,25 @@ def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str)
         background = Image.open(bg_frame_id, "r").convert("RGBA")
         page_img.paste(background, (0, 0), background)
 
+    # Within PageXXInfo, we're given a format similar to 'Layer01="Object01,1"'.
+    # This would presumably state a layer order with a respective object and object type.
+    # However, item type 1 (a business card) lacks this layer information for seemingly no reason.
+    #
+    # Historically, we iterated through all of these to determine the order.
+    # As the client ensures layers are the same index as objects, we will just loop.
+    page_objects_count = int(page_info["PageObjectsCount"])
     for object_num in range(1, page_objects_count + 1):
         # Pad to two zeros where possible.
         object_num = f"{object_num:02}"
 
-        layer_name = page_info[f"Layer{object_num}"].replace("Object", "").split(",")[0]
-
-        object_section = config[f"Page{padded_page_num}Object{layer_name}"]
+        object_section = config[f"Page{padded_page_num}Object{object_num}"]
         object_type = ObjectTypes(object_section["ObjectType"])
 
         # Object is a JPEG.
         if object_type == ObjectTypes.IMAGE:
             zoom = float(object_section["Zoom"]) * 0.01
             rect_used = object_section["RectUsed"].split(",")
-            center_point_x, center_point_y = object_section["CenterPoint"].split(",")
+            center_point_x, center_point_y = parse_coords(object_section["CenterPoint"])
 
             frame_width = int(object_section["EffectFrameWidth"])
             frame_height = int(object_section["EffectFrameHeight"])
@@ -99,36 +112,42 @@ def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str)
             picture = Image.open(object_file_path, "r")
             picture_width, picture_height = picture.size
 
+            # Resize the image with our specified zoom.
             picture_resized = picture.resize(
                 (int(picture_width * zoom), int(picture_height * zoom))
             )
 
+            # Create a mask with the client's specified background color.
             mask_im = Image.new(
                 mode="RGB",
                 size=(int(picture_width * zoom), frame_height),
                 color=background_color,
             )
+
+            # Paste our resized image within the mask.
+            rect_x, rect_y = rect_used[0], rect_used[1]
             mask_im.paste(
                 picture_resized,
                 (
-                    int(int(rect_used[0]) * (zoom * -1)),
-                    int(int(rect_used[1]) * (zoom * -1)),
+                    int(int(rect_x) * (zoom * -1)),
+                    int(int(rect_y) * (zoom * -1)),
                 ),
             )
 
+            # Paste centered within our directed frame location.
             page_img.paste(
                 mask_im,
                 (
-                    int(center_point_x) - int(int(picture_width * zoom) / 2),
-                    int(center_point_y) - int(frame_height / 2),
+                    center_point_x - int(frame_width / 2),
+                    center_point_y - int(frame_height / 2),
                 ),
             )
 
         # Object is text.
         elif object_type == ObjectTypes.TEXT:
-            font_r, font_g, font_b = object_section["FontColor"].split(",")
-            start_position_x, start_position_y = object_section["StartPosition"].split(
-                ","
+            font_r, font_g, font_b = parse_rgb(object_section["FontColor"])
+            start_position_x, start_position_y = parse_coords(
+                object_section["StartPosition"]
             )
 
             character_width = int(float(object_section["Ch_Width_Size"]))
@@ -144,13 +163,12 @@ def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str)
             try:
                 number = int(text.replace(" ", ""))
                 if len(str(number)) == 16:
-                    text = " ".join(
-                        re.findall("....", text.replace(" ", ""))
-                    )  # remove extra spaces
-                if start_position_x == "358":
-                    start_position_x = "585"
-                elif start_position_x == "388":
-                    start_position_x = "715"
+                    # Remove extra spaces
+                    text = " ".join(re.findall("....", text.replace(" ", "")))
+                if start_position_x == 358:
+                    start_position_x = 585
+                elif start_position_x == 388:
+                    start_position_x = 715
             except ValueError:
                 pass
 
@@ -160,9 +178,9 @@ def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str)
             )
 
             draw.text(
-                (int(start_position_x), int(start_position_y)),
+                (start_position_x, start_position_y),
                 text,
-                (int(font_r), int(font_g), int(font_b)),
+                (font_r, font_g, font_b),
                 font,
             )
 
