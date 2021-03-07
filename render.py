@@ -60,7 +60,7 @@ def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str)
     # This field can contain "255,255,255" or a filename for a template.
     background_filename = page_info["BackGroundFileName"]
     if "," not in background_filename:
-        # Black ("255,255,255") is the only color sent by the client.
+        # White ("255,255,255") is the only color sent by the client.
         background_color = (255, 255, 255)
     else:
         # If we're not given a color, default to black.
