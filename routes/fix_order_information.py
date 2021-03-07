@@ -9,7 +9,7 @@ def fix_order_information(_):
     current_order.complete = True
     db.session.commit()
 
-        render(current_order.order_schema, current_order.order_id)
+    render(current_order.order_schema, current_order.order_id)
     eventual_response = {
         "available": 1,
         "itemCode": current_item.itemCode,
