@@ -16,15 +16,6 @@ from flask import Flask, request
 # Import crucial components
 import config
 
-from routes import (
-    get_item_information,
-    get_exemption_information,
-    get_order_id,
-    notice_order_finish,
-)
-import render, sender
-
-TEST_EMAIL = '<email>@<email>.com'
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = config.db_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -65,7 +56,6 @@ def op_servlet():
 @app.route("/wii_svr/WPFileOperationServlet", methods=["GET", "POST"])
 @response()
 def file_op_servlet():
-    global TEST_EMAIL
     if debug:
         request_dump(request)
 
@@ -74,15 +64,3 @@ def file_op_servlet():
         return file_action_list[action](request)
     except KeyError:
         return exceptions.NotFound()
-        print("Arguments:", request.args)
-        print("Headers:", request.headers)
-
-    # TODO: validate
-    open('temp.jpg', mode='wb').write(request.files["jpegData"].read())
-    render.render('temp.jpg', 'Page{}.jpg')
-    sender.digicam_sender('Page0.jpg', TEST_EMAIL)
-    return {
-        "errorItems_1": 0,
-        "message": "a",
-        "imageID": 1,
-    }
