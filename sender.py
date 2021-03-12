@@ -3,6 +3,7 @@
 # and if we do, address concerns about user privacy, possibly IP locking them?
 import binascii
 import config
+from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import (
     Mail,
     Attachment,
