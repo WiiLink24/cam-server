@@ -1,6 +1,8 @@
 from cam import db, app
 from camlib import response, item_wrapper, current_order, current_item
 from render import render
+from sender import digicam_sender
+from shutil import make_archive
 
 
 @response()
@@ -14,6 +16,10 @@ def fix_order_information(_):
     except Exception as e:
         app.logger.exception(e)
         return ""
+
+    make_archive(f"orders/{current_order.order_id}", 'zip', f"orders/{current_order.order_id}")
+
+    digicam_sender(f"orders/{current_order.order_id}.zip", current_order.email)
 
     eventual_response = {
         "available": 1,
