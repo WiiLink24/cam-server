@@ -1,5 +1,7 @@
 import secrets
+import random
 import string
+
 
 from cam import db
 
@@ -18,3 +20,10 @@ def generate_unique_id(table: db.Model, column: object, size: int) -> str:
 
     # It appears we've somehow failed.
     return ""
+
+
+def generate_zip_password(length: int):
+    letters = string.ascii_letters
+    zip_password = ''.join(random.choice(letters) for i in range(length))
+
+    return zip_password
