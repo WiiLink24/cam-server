@@ -1,8 +1,11 @@
+import os
+
 from cam import db, app
 from camlib import response, item_wrapper, current_order, current_item
+from routes.utils import generate_zip_password
 from render import render
 from sender import digicam_sender
-from shutil import make_archive
+
 
 
 @response()
@@ -17,9 +20,11 @@ def fix_order_information(_):
         app.logger.exception(e)
         return ""
 
-    make_archive(f"orders/{current_order.order_id}", 'zip', f"orders/{current_order.order_id}")
+    password = generate_zip_password(10)
 
-    digicam_sender(f"orders/{current_order.order_id}.zip", current_order.email)
+    os.system(f"cd orders/{current_order.order_id}; zip --password {password} {current_order.order_id}.zip -r *.png")
+
+    digicam_sender(f"orders/{current_order.order_id}/{current_order.order_id}.zip", current_order.email, password)
 
     eventual_response = {
         "available": 1,
