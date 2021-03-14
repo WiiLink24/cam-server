@@ -3,6 +3,7 @@ Flask>=1.1
 psycopg2>=2.8
 flask_sqlalchemy>=2.4
 flask-migrate>=2.5
+sendgrid>=6.6.0
 Pillow-SIMD>=7.0; platform_machine == 'x86_64'
 Pillow>=7.0; platform_machine != 'x86_64'
 colorama>=0.4
