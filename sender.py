@@ -17,7 +17,7 @@ from sendgrid.helpers.mail import (
 def digicam_sender(file, toemail):
     """Sends the images to the users email"""
     msg = Mail(
-        from_email="noahpistilli@gmail.com",
+        from_email="digicam@wiilink24.com",
         to_emails=toemail,
         subject="Here is your photo!",
         html_content="The photo is in attachments! Enjoy!",
