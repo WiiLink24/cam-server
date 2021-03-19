@@ -22,7 +22,7 @@ def digicam_sender(file, toemail, password):
         html_content=f"The photo is in attachments! Enjoy! The password is {password}",
     )
 
-    with open(file, 'rb') as f:
+    with open(file, "rb") as f:
         data = f.read()
         f.close()
 

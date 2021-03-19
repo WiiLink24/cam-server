@@ -24,6 +24,6 @@ def generate_unique_id(table: db.Model, column: object, size: int) -> str:
 
 def generate_zip_password(length: int):
     letters = string.ascii_letters
-    zip_password = ''.join(random.choice(letters) for i in range(length))
+    zip_password = "".join(random.choice(letters) for i in range(length))
 
     return zip_password

@@ -7,7 +7,6 @@ from render import render
 from sender import digicam_sender
 
 
-
 @response()
 @item_wrapper()
 def fix_order_information(_):
@@ -22,9 +21,15 @@ def fix_order_information(_):
 
     password = generate_zip_password(10)
 
-    os.system(f"cd orders/{current_order.order_id}; zip --password {password} {current_order.order_id}.zip -r *.png")
+    os.system(
+        f"cd orders/{current_order.order_id}; zip --password {password} {current_order.order_id}.zip -r *.png"
+    )
 
-    digicam_sender(f"orders/{current_order.order_id}/{current_order.order_id}.zip", current_order.email, password)
+    digicam_sender(
+        f"orders/{current_order.order_id}/{current_order.order_id}.zip",
+        current_order.email,
+        password,
+    )
 
     eventual_response = {
         "available": 1,
