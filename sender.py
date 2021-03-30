@@ -10,7 +10,7 @@ from sendgrid.helpers.mail import (
     FileName,
     FileType,
     Disposition,
- )
+)
 
 
 def digicam_sender(file, toemail, password):
@@ -22,7 +22,7 @@ def digicam_sender(file, toemail, password):
         html_content=f"The photo is in attachments! Enjoy! The password is {password}",
     )
 
-    with open(file, 'rb') as f:
+    with open(file, "rb") as f:
         data = f.read()
         f.close()
 
@@ -38,4 +38,3 @@ def digicam_sender(file, toemail, password):
     sg = SendGridAPIClient(config.sendgrid_key)
     response = sg.send(msg)
     print(response.status_code)
-    
