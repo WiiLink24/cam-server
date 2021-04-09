@@ -77,7 +77,7 @@ def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str)
 
     # If we were given a true filename, paste it over our background.
     if ".bmp" in background_filename:
-        bg_frame_id = "assets/templates/{}".format(
+        bg_frame_id = "templates/templates/{}".format(
             background_filename.replace(".bmp", ".png")
         )
 
@@ -174,7 +174,7 @@ def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str)
 
             draw = ImageDraw.Draw(page_img)
             font = ImageFont.truetype(
-                "assets/fonts/FOT-RodinNTLGPro-DB.otf", character_height
+                "templates/fonts/FOT-RodinNTLGPro-DB.otf", character_height
             )
 
             draw.text(
@@ -186,7 +186,7 @@ def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str)
 
         # Object is a background.
         elif object_type == ObjectTypes.BACKGROUND:
-            bg_frame_id = "assets/templates/{}".format(
+            bg_frame_id = "templates/templates/{}".format(
                 object_section["BGFrameID"].replace(".bmp", ".png")
             )
 
