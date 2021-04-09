@@ -22,7 +22,7 @@ def fix_order_information(_):
     password = generate_zip_password(10)
 
     os.system(
-        f"cd orders/{current_order.order_id}; zip --password {password} {current_order.order_id}.zip -r *.png"
+        f"cd orders/{current_order.order_id}; zip --password {password} {current_order.order_id}.zip -r *.jpg"
     )
 
     digicam_sender(

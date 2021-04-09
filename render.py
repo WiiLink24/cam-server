@@ -138,8 +138,8 @@ def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str)
             page_img.paste(
                 mask_im,
                 (
-                    center_point_x - int(frame_width / 2),
-                    center_point_y - int(frame_height / 2),
+                    center_point_x - (frame_width // 2),
+                    center_point_y - (frame_height // 2),
                 ),
             )
 
@@ -193,9 +193,9 @@ def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str)
             background = Image.open(bg_frame_id, "r").convert("RGBA")
             page_img.paste(background, (0, 0), background)
 
-    page_filename = f"Page {page_num}.png"
+    page_filename = f"Page {page_num}.jpg"
     page_save_path = determine_path(order_id, page_filename)
 
-    page_img = page_img.quantize(method=2)
+    page_img.convert("RGB")
     page_img.save(f"{page_save_path}", optimize=True)
     print(f"Processed {page_filename}")
