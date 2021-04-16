@@ -1,6 +1,7 @@
 import glob
 import os
 import zipfile
+from os.path import basename
 
 from cam import db, app
 from camlib import response, item_wrapper, current_order, current_item
@@ -28,7 +29,7 @@ def fix_order_information(_):
     order_zip = zipfile.ZipFile(zip_location, "w", zipfile.ZIP_DEFLATED)
 
     for page_file in glob.glob(f"{order_location}/Page *.jpg"):
-        order_zip.write(page_file)
+        order_zip.write(page_file, basename(page_file))
 
     order_zip.close()
 
