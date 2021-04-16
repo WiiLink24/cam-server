@@ -13,13 +13,17 @@ from sendgrid.helpers.mail import (
 )
 
 
-def digicam_sender(file, toemail, password):
+def digicam_sender(file, user_email):
     """Sends the images to the users email"""
     msg = Mail(
         from_email="digicam@wiilink24.com",
-        to_emails=toemail,
-        subject="Here is your photo!",
-        html_content=f"The photo is in attachments! Enjoy! The password is {password}",
+        to_emails=user_email,
+        subject="Here is your order!",
+        html_content="""Hello!
+Attached are your images from the Digicam Print Channel.
+We hope you enjoy, and thank you for using our service!
+
+The WiiLink24 Team""",
     )
 
     with open(file, "rb") as f:
@@ -36,5 +40,4 @@ def digicam_sender(file, toemail, password):
     )
 
     sg = SendGridAPIClient(config.sendgrid_key)
-    response = sg.send(msg)
-    print(response.status_code)
+    sg.send(msg)

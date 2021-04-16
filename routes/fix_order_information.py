@@ -1,8 +1,9 @@
+import glob
 import os
+import zipfile
 
 from cam import db, app
 from camlib import response, item_wrapper, current_order, current_item
-from routes.utils import generate_zip_password
 from render import render
 from sender import digicam_sender
 
@@ -13,23 +14,26 @@ def fix_order_information(_):
     current_order.complete = True
     db.session.commit()
 
+    # Render our user's order to "Page XX.jpg" files.
     try:
         render(current_order.order_schema, current_order.order_id)
     except Exception as e:
         app.logger.exception(e)
         return ""
 
-    password = generate_zip_password(10)
+    order_location = os.path.join("orders", current_order.order_id)
 
-    os.system(
-        f"cd orders/{current_order.order_id}; zip --password {password} {current_order.order_id}.zip -r *.jpg"
-    )
+    # Create a zip file of our order's images.
+    zip_location = os.path.join(order_location, f"{current_order.order_id}.zip")
+    order_zip = zipfile.ZipFile(zip_location, "w", zipfile.ZIP_DEFLATED)
 
-    digicam_sender(
-        f"orders/{current_order.order_id}/{current_order.order_id}.zip",
-        current_order.email,
-        password,
-    )
+    for page_file in glob.glob(f"{order_location}/Page *.jpg"):
+        order_zip.write(page_file)
+
+    order_zip.close()
+
+    # Finally, send the user's order.
+    digicam_sender(zip_location, current_order.email)
 
     eventual_response = {
         "available": 1,

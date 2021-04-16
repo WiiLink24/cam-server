@@ -7,7 +7,7 @@ WORKDIR /home/server
 COPY requirements.txt .
 
 # Required base dependencies for psycopg2, lxml, and pillow.
-RUN apk add -U --no-cache libpq libxslt-dev libxml2-dev jpeg-dev zlib-dev freetype-dev zip
+RUN apk add -U --no-cache libpq libxslt-dev libxml2-dev jpeg-dev zlib-dev freetype-dev
 
 RUN apk add --virtual .build-deps build-base postgresql-dev && \
   pip3 install -r requirements.txt && \
