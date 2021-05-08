@@ -58,7 +58,7 @@ class Items:
     count: int = 1
 
     def add(self, item: ItemInfo):
-        """ Used to add an item. Updates item code and item price code accordingly.  """
+        """Used to add an item. Updates item code and item price code accordingly."""
         proper_code = f"{self.count:05}"
         item.itemCode = proper_code
         item.itemPriceCode = proper_code

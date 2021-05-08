@@ -138,7 +138,7 @@ dmypy.json
 *.otf
 *.ini
 !migrations/alembic.ini
-assets
 orders
+templates
 
 config.py

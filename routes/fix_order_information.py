@@ -1,10 +1,12 @@
 import glob
 import os
+import shutil
 import zipfile
 from os.path import basename
 
 from cam import db, app
 from camlib import response, item_wrapper, current_order, current_item
+from models import Images
 from render import render
 from sender import digicam_sender
 
@@ -33,8 +35,15 @@ def fix_order_information(_):
 
     order_zip.close()
 
-    # Finally, send the user's order.
+    # Send the user's order.
     digicam_sender(zip_location, current_order.email)
+
+    # Finally, delete the order once fully complete.
+    shutil.rmtree(order_location)
+
+    db.session.query(Images).filter(Images.order_id == current_order.order_id).delete()
+    db.session.delete(current_order)
+    db.session.commit()
 
     eventual_response = {
         "available": 1,
