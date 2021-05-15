@@ -12,21 +12,34 @@ from sendgrid.helpers.mail import (
     Disposition,
 )
 
+from camlib import current_order
 
-def digicam_sender(file, user_email):
+
+def digicam_sender(file_path: str, user_email: str, is_for_card: bool):
     """Sends the images to the users email"""
+
+    html_content = """Hello!
+Attached are your images from the Digicam Print Channel.
+We hope you enjoy, and thank you for using our service!"""
+
+    if is_for_card:
+        html_content += f"""
+
+It looks like you ordered a business card. Did you know you can share these publicly via Digicard?
+If you're interested, visit https://card.wiilink24.com. Your order ID to link is {current_order.order_id}."""
+
+    html_content += """
+
+The WiiLink24 Team"""
+
     msg = Mail(
         from_email="digicam@wiilink24.com",
         to_emails=user_email,
         subject="Here is your order!",
-        html_content="""Hello!
-Attached are your images from the Digicam Print Channel.
-We hope you enjoy, and thank you for using our service!
-
-The WiiLink24 Team""",
+        html_content=html_content,
     )
 
-    with open(file, "rb") as f:
+    with open(file_path, "rb") as f:
         data = f.read()
         f.close()
 

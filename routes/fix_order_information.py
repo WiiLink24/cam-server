@@ -32,14 +32,15 @@ def fix_order_information(_):
 
     order_zip.close()
 
-    # Send the user's order.
-    digicam_sender(zip_location, current_order.email)
-
     if service_type == 3:
         # We will preserve rendered business cards for Digicard.
         current_order.is_business_card = True
-    else:
-        # Finally, delete the order once fully complete.
+
+    # Send the user's order.
+    digicam_sender(zip_location, current_order.email, current_order.is_business_card)
+
+    if not current_order.is_business_card:
+        # Delete the order once fully complete.
         shutil.rmtree(order_location)
 
         db.session.query(Images).filter(
