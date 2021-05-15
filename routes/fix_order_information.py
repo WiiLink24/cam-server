@@ -14,12 +14,9 @@ from sender import digicam_sender
 @response()
 @item_wrapper()
 def fix_order_information(_):
-    current_order.complete = True
-    db.session.commit()
-
     # Render our user's order to "Page XX.jpg" files.
     try:
-        render(current_order.order_schema, current_order.order_id)
+        service_type = render(current_order.order_schema, current_order.order_id)
     except Exception as e:
         app.logger.exception(e)
         return ""
@@ -38,11 +35,18 @@ def fix_order_information(_):
     # Send the user's order.
     digicam_sender(zip_location, current_order.email)
 
-    # Finally, delete the order once fully complete.
-    shutil.rmtree(order_location)
+    if service_type == 3:
+        # We will preserve rendered business cards for Digicard.
+        current_order.is_business_card = True
+    else:
+        # Finally, delete the order once fully complete.
+        shutil.rmtree(order_location)
 
-    db.session.query(Images).filter(Images.order_id == current_order.order_id).delete()
-    db.session.delete(current_order)
+        db.session.query(Images).filter(
+            Images.order_id == current_order.order_id
+        ).delete()
+        db.session.delete(current_order)
+
     db.session.commit()
 
     eventual_response = {

@@ -5,6 +5,7 @@ import re
 from PIL import Image, ImageDraw, ImageFont
 from werkzeug.utils import secure_filename
 
+from cam import debug
 from routes.get_image_id import determine_path
 
 
@@ -25,7 +26,7 @@ def parse_rgb(color: str) -> (int, int, int):
     return int(r), int(g), int(b)
 
 
-def render(order_schema: str, order_id: str):
+def render(order_schema: str, order_id: str) -> int:
     s_config = order_schema.encode().decode("utf-8-sig")
 
     buf = io.StringIO(s_config)
@@ -45,12 +46,15 @@ def render(order_schema: str, order_id: str):
 
     service_types = {1: "Notebook", 2: "Photo Book", 3: "Business Card"}
 
-    print("Print Type: {}\n".format(service_types[service_type]))
+    if debug:
+        print("Print Type: {}\n".format(service_types[service_type]))
 
     # We're often given multiple pages.
     # Iterate through all.
     for page_num in range(1, page_count + 1):
         handle_page(page_num, config, order_id)
+
+    return service_type
 
 
 def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str):
@@ -198,4 +202,5 @@ def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str)
 
     page_img.convert("RGB")
     page_img.save(f"{page_save_path}", optimize=True)
-    print(f"Processed {page_filename}")
+    if debug:
+        print(f"Processed {page_filename}")
