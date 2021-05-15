@@ -42,7 +42,7 @@ item_data.add(
 )
 item_data.add(
     ItemInfo(
-        itemName="Club Rocket",
+        itemName="Club WiiLink24",
         itemComment1="Order exclusive items.",
     )
 )
