@@ -2,7 +2,7 @@ from dataclasses import dataclass, asdict, field
 from typing import Optional
 
 DEFAULT_COMMENT_TWO = "Print responsibly."
-DEFAULT_PRICE_UNIT = "Ryal Points"
+DEFAULT_PRICE_UNIT = "$"
 DEFAULT_DELIVERY_TEXT = "Emails within 1 to 10 minutes."
 
 
