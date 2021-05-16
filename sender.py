@@ -18,6 +18,10 @@ from camlib import current_order
 def digicam_sender(file_path: str, user_email: str, is_for_card: bool):
     """Sends the images to the users email"""
 
+    # Sending is optional.
+    if config.sendgrid_key is None:
+        return
+
     html_content = """Hello!
 Attached are your images from the Digicam Print Channel.
 We hope you enjoy, and thank you for using our service!"""
