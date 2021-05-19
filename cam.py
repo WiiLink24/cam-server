@@ -1,7 +1,9 @@
 # Required to allow reading of jpegData. Flask must be imported after this code.
 import colorama
+import sentry_sdk
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from sentry_sdk.integrations.flask import FlaskIntegration
 from werkzeug import formparser
 
 from debug import request_dump
@@ -15,6 +17,16 @@ from flask import Flask, request
 
 # Import crucial components
 import config
+
+if config.use_sentry:
+    sentry_sdk.init(
+        dsn=config.sentry_dsn,
+        integrations=[FlaskIntegration()],
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production.
+        traces_sample_rate=1.0,
+    )
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = config.db_url

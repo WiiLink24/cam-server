@@ -7,3 +7,4 @@ python-dotenv>=0.17.1
 Pillow-SIMD>=7.0; platform_machine == 'x86_64'
 Pillow>=7.0; platform_machine != 'x86_64'
 colorama>=0.4
+sentry-sdk[flask]>=1.1.0
