@@ -30,7 +30,9 @@ We hope you enjoy, and thank you for using our service!"""
         html_content += f"""
 
 It looks like you ordered a business card. Did you know you can share these publicly via Digicard?
-If you're interested, visit https://card.wiilink24.com. Your order ID to link is {current_order.order_id}."""
+If you're interested, visit https://card.wiilink24.com. Your order ID to link is {current_order.order_id}.
+Do not share this order ID with anyone else, or they will be able to use your card.
+"""
 
     html_content += """
 
