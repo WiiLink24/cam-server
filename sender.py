@@ -39,7 +39,7 @@ Do not share this order ID with anyone else, or they will be able to use your ca
 The WiiLink24 Team"""
 
     msg = Mail(
-        from_email="digicam@wiilink24.com",
+        from_email="noahpistilli@gmail.com",
         to_emails=user_email,
         subject="Here is your order!",
         html_content=html_content,
@@ -51,12 +51,20 @@ The WiiLink24 Team"""
 
     encoded_file = base64.b64encode(data).decode()
 
-    msg.attachment = Attachment(
-        FileContent(encoded_file),
-        FileName("images.zip"),
-        FileType("application/zip"),
-        Disposition("attachment"),
-    )
+    if is_for_card:
+        msg.attachment = Attachment(
+            FileContent(encoded_file),
+            FileName("business_card.jpeg"),
+            FileType("application/jpeg"),
+            Disposition("attachment"),
+        )
+    else:
+        msg.attachment = Attachment(
+            FileContent(encoded_file),
+            FileName("images.zip"),
+            FileType("application/zip"),
+            Disposition("attachment"),
+        )
 
     sg = SendGridAPIClient(config.sendgrid_key)
     sg.send(msg)
