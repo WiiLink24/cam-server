@@ -39,7 +39,7 @@ Do not share this order ID with anyone else, or they will be able to use your ca
 The WiiLink24 Team"""
 
     msg = Mail(
-        from_email="noahpistilli@gmail.com",
+        from_email="digicam@wiilink24.com",
         to_emails=user_email,
         subject="Here is your order!",
         html_content=html_content,
