@@ -1,17 +1,15 @@
 # Required to allow reading of jpegData. Flask must be imported after this code.
+import formparser_override
+
+# Now we can continue.
 import colorama
 import sentry_sdk
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sentry_sdk.integrations.flask import FlaskIntegration
-from werkzeug import formparser
 
 from debug import request_dump
-from formparser_override import parse_multipart_headers_fix
 
-formparser.parse_multipart_headers = parse_multipart_headers_fix
-
-# Now we can continue.
 from werkzeug import exceptions
 from flask import Flask, request
 
