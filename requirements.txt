@@ -1,10 +1,9 @@
-Flask>=2.0.3
-psycopg2>=2.8
-flask_sqlalchemy>=2.5
+Flask>=2.2.1
+psycopg2>=2.9
+flask_sqlalchemy>=2.5.1
 flask-migrate>=3.1.0
-sendgrid>=6.9.6
-python-dotenv>=0.19.2
+sendgrid>=6.9.7
 Pillow-SIMD>=9.0; platform_machine == 'x86_64'
-Pillow>=9.0; platform_machine != 'x86_64'
-colorama>=0.4
-sentry-sdk[flask]>=1.5.6
+Pillow>=9.2; platform_machine != 'x86_64'
+colorama>=0.4.5
+sentry-sdk[flask]>=1.9.2
