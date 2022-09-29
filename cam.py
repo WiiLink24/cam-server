@@ -74,3 +74,8 @@ def file_op_servlet():
         return file_action_list[action](request)
     except KeyError:
         return exceptions.NotFound()
+
+# quick hack for monitoring, just a basic endpoint
+@app.route("/hello")
+def hello():
+    return "It Works!"
