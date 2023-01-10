@@ -2,6 +2,10 @@
 # and if we do, address concerns about user privacy, possibly IP locking them?
 import base64
 import config
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import (
     Mail,
@@ -19,7 +23,7 @@ def digicam_sender(file_path: str, user_email: str, is_for_card: bool):
     """Sends the images to the users email"""
 
     # Sending is optional.
-    if config.sendgrid_key is None:
+    if config.smtp_key is None:
         return
 
     html_content = """Hello!
@@ -36,35 +40,29 @@ Do not share this order ID with anyone else, or they will be able to use your ca
 
     html_content += """
 
-The WiiLink24 Team"""
-
-    msg = Mail(
-        from_email="digicam@wiilink24.com",
-        to_emails=user_email,
-        subject="Here is your order!",
-        html_content=html_content,
-    )
+The WiiLink Team"""
 
     with open(file_path, "rb") as f:
         data = f.read()
         f.close()
 
-    encoded_file = base64.b64encode(data).decode()
+    msg = MIMEMultipart()
+    msg.attach(MIMEText(html_content))
 
     if is_for_card:
-        msg.attachment = Attachment(
-            FileContent(encoded_file),
-            FileName("business_card.jpeg"),
-            FileType("application/jpeg"),
-            Disposition("attachment"),
-        )
+        part = MIMEApplication(data, Name="business_card.jpeg")
+        part['Content-Disposition'] = f'attachment; filename="business_card.jpeg"'
     else:
-        msg.attachment = Attachment(
-            FileContent(encoded_file),
-            FileName("images.zip"),
-            FileType("application/zip"),
-            Disposition("attachment"),
-        )
+        part = MIMEApplication(data, Name="images.zip")
+        part['Content-Disposition'] = f'attachment; filename="images.zip"'
 
-    sg = SendGridAPIClient(config.sendgrid_key)
-    sg.send(msg)
+    msg.attach(part)
+
+    msg["Subject"] = "Here is your order!"
+    msg["From"] = "images@digicam.wiilink24.com"
+    msg["To"] = user_email
+
+    s = smtplib.SMTP('smtp.mailgun.org', 587)
+    s.login('postmaster@digicam.wiilink24.com', config.smtp_key)
+    s.sendmail(msg['From'], msg['To'], msg.as_string())
+    s.close()
