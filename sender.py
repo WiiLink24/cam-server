@@ -51,10 +51,10 @@ The WiiLink Team"""
 
     if is_for_card:
         part = MIMEApplication(data, Name="business_card.jpeg")
-        part['Content-Disposition'] = f'attachment; filename="business_card.jpeg"'
+        part['Content-Disposition'] = 'attachment; filename="business_card.jpeg"'
     else:
         part = MIMEApplication(data, Name="images.zip")
-        part['Content-Disposition'] = f'attachment; filename="images.zip"'
+        part['Content-Disposition'] = 'attachment; filename="images.zip"'
 
     msg.attach(part)
 

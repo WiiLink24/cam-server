@@ -9,17 +9,11 @@ from models import Orders
 
 
 def get_current_order():
-    if "current_order" not in g:
-        return None
-    else:
-        return g.current_order
+    return None if "current_order" not in g else g.current_order
 
 
 def get_current_item():
-    if "current_item" not in g:
-        return None
-    else:
-        return g.current_item
+    return None if "current_item" not in g else g.current_item
 
 
 # For easy access
