@@ -50,7 +50,7 @@ def item_map(data) -> dict:
     ```
     repeatedly.
     """
-    return dict((k, [v]) for k, v in data)
+    return {k: [v] for k, v in data}
 
 
 class Items:
@@ -68,8 +68,4 @@ class Items:
         self.count += 1
 
     def get_item(self, code) -> Optional[ItemInfo]:
-        for item in self.items:
-            if item.itemCode == code:
-                return item
-
-        return None
+        return next((item for item in self.items if item.itemCode == code), None)

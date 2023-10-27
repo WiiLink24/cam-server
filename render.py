@@ -44,10 +44,10 @@ def render(order_schema: str, order_id: str) -> int:
     page_count = int(base_info["PageCount"])
     service_type = int(base_info["ServiceType"])
 
-    service_types = {1: "Notebook", 2: "Photo Book", 3: "Business Card"}
-
     if debug:
-        print("Print Type: {}\n".format(service_types[service_type]))
+        service_types = {1: "Notebook", 2: "Photo Book", 3: "Business Card"}
+
+        print(f"Print Type: {service_types[service_type]}\n")
 
     # We're often given multiple pages.
     # Iterate through all.
@@ -63,13 +63,7 @@ def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str)
 
     # This field can contain "255,255,255" or a filename for a template.
     background_filename = page_info["BackGroundFileName"]
-    if "," not in background_filename:
-        # White ("255,255,255") is the only color sent by the client.
-        background_color = (255, 255, 255)
-    else:
-        # If we're not given a color, default to black.
-        background_color = (0, 0, 0)
-
+    background_color = (0, 0, 0) if "," in background_filename else (255, 255, 255)
     # This image represents one for the entire page.
     print_size_width = int(page_info["PrintSizeWidth"])
     print_size_height = int(page_info["PrintSizeHeight"])
@@ -81,9 +75,7 @@ def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str)
 
     # If we were given a true filename, paste it over our background.
     if ".bmp" in background_filename:
-        bg_frame_id = "templates/templates/{}".format(
-            background_filename.replace(".bmp", ".png")
-        )
+        bg_frame_id = f'templates/templates/{background_filename.replace(".bmp", ".png")}'
 
         background = Image.open(bg_frame_id, "r").convert("RGBA")
         page_img.paste(background, (0, 0), background)
@@ -147,7 +139,6 @@ def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str)
                 ),
             )
 
-        # Object is text.
         elif object_type == ObjectTypes.TEXT:
             font_r, font_g, font_b = parse_rgb(object_section["FontColor"])
             start_position_x, start_position_y = parse_coords(
@@ -188,11 +179,8 @@ def handle_page(page_num: int, config: configparser.ConfigParser, order_id: str)
                 font,
             )
 
-        # Object is a background.
         elif object_type == ObjectTypes.BACKGROUND:
-            bg_frame_id = "templates/templates/{}".format(
-                object_section["BGFrameID"].replace(".bmp", ".png")
-            )
+            bg_frame_id = f'templates/templates/{object_section["BGFrameID"].replace(".bmp", ".png")}'
 
             background = Image.open(bg_frame_id, "r").convert("RGBA")
             page_img.paste(background, (0, 0), background)

@@ -53,7 +53,7 @@ def dict_to_custom_format(passed_dict: dict) -> str:
 
                 result += f"{key}_{current_index}={current_value}\n"
 
-        if isinstance(value, str) or isinstance(value, int):
+        if isinstance(value, (str, int)):
             result += f"{key}={value}\n"
 
     return result
