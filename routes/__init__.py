@@ -8,6 +8,7 @@ from .get_service_information import get_service_information
 from .order_finish import notice_order_finish
 from .order_id_available import order_id_available
 from .update_order_information import update_order_information
+from .get_assets import get_assets
 
 action_list = {
     "getItemInformation": get_item_information,
@@ -18,6 +19,7 @@ action_list = {
     "isAvailableOrderID": order_id_available,
     "updateOrderInformation": update_order_information,
     "fixOrderInformation": fix_order_information,
+    "getAssets": get_assets,
 }
 
 file_action_list = {
