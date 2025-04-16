@@ -35,7 +35,7 @@ import models
 
 # Create schema and migrate accordingly
 migrate = Migrate(app, db, compare_type=True)
-with app.test_request_context():
+with app.app_context():
     db.init_app(app)
     db.create_all()
 
