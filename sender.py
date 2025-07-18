@@ -49,7 +49,7 @@ The WiiLink Team"""
     msg.attach(part)
 
     msg["Subject"] = "Here is your order!"
-    msg["From"] = "images@digicam.wiilink24.com"
+    msg["From"] = "digicam@wiilink.ca"
     msg["To"] = user_email
 
     s = smtplib.SMTP("mail.postale.io", 587)
