@@ -7,7 +7,7 @@ WORKDIR /home/server
 COPY requirements.txt .
 
 # Install dependencies
-RUN apk add -U --no-cache libpq-dev build-base git zlib-dev jpeg-dev
+RUN apk add -U --no-cache libpq-dev build-base git zlib-dev jpeg-dev freetype-dev
 
 RUN pip3 install -r requirements.txt && \
   pip3 install gunicorn
